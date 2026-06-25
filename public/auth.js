@@ -125,6 +125,28 @@ function setupSocialAuthButtons() {
     });
 }
 
+async function setupDemoLoginVisibility() {
+    if (!demoLoginBtn) return;
+
+    try {
+        const response = await fetch("/api/auth/demo-status", {
+            method: "GET",
+            credentials: "include"
+        });
+
+        if (!response.ok) return;
+
+        const result = await response.json();
+
+        if (result.enabled) {
+            demoLoginBtn.hidden = false;
+        }
+    } catch (error) {
+        demoLoginBtn.hidden = true;
+    }
+}
+// Demo Website 
+
 function setActiveAuthTab(tabName) {
     authTabs.forEach((tab) => {
         const isActive = tab.dataset.authTab === tabName;
@@ -533,6 +555,7 @@ function initAuthPage() {
     setupPasswordToggles();
     setupLoginForm();
     setupRegisterForm();
+    setupDemoLoginVisibility();
     setupDemoLoginButton();
     setupForgotPasswordLink();
     setupForgotPasswordModal();

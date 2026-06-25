@@ -19,10 +19,12 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Demo Website
 const DEMO_MODE = process.env.DEMO_MODE === "true";
 const DEMO_EMAIL = (process.env.DEMO_EMAIL || "demo@jobtracker.dev").toLowerCase();
 const DEMO_PASSWORD = process.env.DEMO_PASSWORD || "demo123";
 const DEMO_USER_ID = "demo-user-v1";
+// Demo Website
 
 /* ----------------------------- Production helpers ----------------------------- */
 
@@ -840,6 +842,12 @@ app.post("/api/auth/demo", authLimiter, asyncHandler(async (req, res) => {
         user: publicUser(demoUser)
     });
 }));
+
+app.get("/api/auth/demo-status", (req, res) => {
+    res.json({
+        enabled: DEMO_MODE
+    });
+});
 // Demo Website
 
 
