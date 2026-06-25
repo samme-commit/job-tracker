@@ -635,86 +635,102 @@ function publicUser(user) {
 
 /* ----------------------------- GitHub OAuth ----------------------------- */
 
+const hasGitHubOAuth =
+    Boolean(process.env.GITHUB_CLIENT_ID) &&
+    Boolean(process.env.GITHUB_CLIENT_SECRET) &&
+    Boolean(process.env.GITHUB_CALLBACK_URL);
+
+if (hasGitHubOAuth) {
+    passport.use(new GitHubStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: process.env.GITHUB_CALLBACK_URL
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            const users = await readJSON(usersPath);
+
+            const githubId = profile.id;
+            const githubUsername = profile.username || profile.displayName || "github-user";
+            const displayName = profile.displayName || githubUsername;
+
+            const email = profile.emails && profile.emails[0]
+                ? profile.emails[0].value.toLowerCase()
+                : `${githubUsername}@github.local`.toLowerCase();
+
+            let user = users.find((existingUser) => {
+                return existingUser.providers?.github?.id === githubId;
+            });
+
+            if (!user) {
+                user = users.find((existingUser) => {
+                    return existingUser.email?.toLowerCase() === email;
+                });
+
+                if (user) {
+                    user.providers = {
+                        ...(user.providers || {}),
+                        github: {
+                            id: githubId,
+                            username: githubUsername
+                        }
+                    };
+                }
+            }
+
+            if (!user) {
+                user = {
+                    id: randomUUID(),
+                    name: displayName,
+                    email,
+                    passwordHash: null,
+                    profileImg: profile.photos && profile.photos[0]
+                        ? profile.photos[0].value
+                        : null,
+
+                    username: null,
+                    title: "",
+                    bio: "",
+                    skills: [],
+                    githubUrl: `https://github.com/${githubUsername}`,
+                    portfolioUrl: "",
+                    linkedinUrl: "",
+                    contactEmail: "",
+                    location: "",
+                    openToWork: true,
+                    projects: [],
+                    profileVisibility: "private",
+
+                    providers: {
+                        github: {
+                            id: githubId,
+                            username: githubUsername
+                        }
+                    },
+
+                    lastNameChangeAt: null,
+                    createdAt: new Date().toISOString()
+                };
+
+                users.push(user);
+            }
+
+            await writeJSON(usersPath, users);
+
+            return done(null, publicUser(user));
+        } catch (error) {
+            done(error, null);
+        }
+    }));
+} else {
+    console.warn("GitHub OAuth is disabled because env variables are missing.");
+}
+
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: process.env.GITHUB_CALLBACK_URL
 }, async (accessToken, refreshToken, profile, done) => {
-    try {
-        const users = await readJSON(usersPath);
-
-        const githubId = profile.id;
-        const githubUsername = profile.username || profile.displayName || "github-user";
-        const displayName = profile.displayName || githubUsername;
-
-        const email = profile.emails && profile.emails[0]
-            ? profile.emails[0].value.toLowerCase()
-            : `${githubUsername}@github.local`.toLowerCase();
-
-        let user = users.find((existingUser) => {
-            return existingUser.providers?.github?.id === githubId;
-        });
-
-        if (!user) {
-            user = users.find((existingUser) => {
-                return existingUser.email?.toLowerCase() === email;
-            });
-
-            if (user) {
-                user.providers = {
-                    ...(user.providers || {}),
-                    github: {
-                        id: githubId,
-                        username: githubUsername
-                    }
-                };
-            }
-        }
-
-        if (!user) {
-            user = {
-                id: randomUUID(),
-                name: displayName,
-                email,
-                passwordHash: null,
-                profileImg: profile.photos && profile.photos[0]
-                    ? profile.photos[0].value
-                    : null,
-
-                username: null,
-                title: "",
-                bio: "",
-                skills: [],
-                githubUrl: `https://github.com/${githubUsername}`,
-                portfolioUrl: "",
-                linkedinUrl: "",
-                contactEmail: "",
-                location: "",
-                openToWork: true,
-                projects: [],
-                profileVisibility: "private",
-
-                providers: {
-                    github: {
-                        id: githubId,
-                        username: githubUsername
-                    }
-                },
-
-                lastNameChangeAt: null,
-                createdAt: new Date().toISOString()
-            };
-
-            users.push(user);
-        }
-
-        await writeJSON(usersPath, users);
-
-        return done(null, publicUser(user));
-
-    } catch (error) {
-        return done(error, null);
-    }
+    
 }));
 
 /* ----------------------------- Health ----------------------------- */
@@ -887,9 +903,15 @@ app.post("/api/auth/logout", requireAuth, (req, res) => {
     });
 });
 
-app.get("/api/auth/github", authLimiter, passport.authenticate("github", {
-    scope: ["user:email"]
-}));
+app.get("/api/auth/github", authLimiter, (req, res, next) => {
+    if (!hasGitHubOAuth) {
+        return res.redirect("/auth.html?error=github_disabled");
+    }
+
+    return passport.authenticate("github", {
+        scope: ["user:email"]
+    })(req, res, next);
+});
 
 app.get("/api/auth/github/callback", passport.authenticate("github", {
     session: false,
