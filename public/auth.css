@@ -1557,3 +1557,34 @@ body.modal-open {
         transform: translateX(120%);
     }
 }
+
+/*! Demo Website */
+.demo-login-btn {
+    width: 100%;
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    background: rgba(139, 92, 246, 0.12);
+    color: #f8fafc;
+    border-radius: 14px;
+    padding: 0.9rem 1rem;
+    margin-top: 0.85rem;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.demo-login-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(139, 92, 246, 0.75);
+    background: rgba(139, 92, 246, 0.2);
+}
+
+.demo-login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}

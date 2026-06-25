@@ -19,6 +19,11 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const DEMO_MODE = process.env.DEMO_MODE === "true";
+const DEMO_EMAIL = (process.env.DEMO_EMAIL || "demo@jobtracker.dev").toLowerCase();
+const DEMO_PASSWORD = process.env.DEMO_PASSWORD || "demo123";
+const DEMO_USER_ID = "demo-user-v1";
+
 /* ----------------------------- Production helpers ----------------------------- */
 
 if (process.env.NODE_ENV === "production") {
@@ -293,6 +298,213 @@ async function readJSON(filePath) {
 async function writeJSON(filePath, data) {
     await fs.writeFile(filePath, JSON.stringify(data, null, 4));
 }
+
+// Demo Website
+
+function getDaysAgo(days) {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+    return date.toISOString().split("T")[0];
+}
+
+async function seedDemoAccount() {
+    if (!DEMO_MODE) return null;
+
+    const now = new Date().toISOString();
+    const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
+
+    const users = await readJSON(usersPath);
+    const existingDemoIndex = users.findIndex((user) => {
+        return user.email?.toLowerCase() === DEMO_EMAIL || user.id === DEMO_USER_ID;
+    });
+
+    const existingDemoUser = existingDemoIndex !== -1 ? users[existingDemoIndex] : null;
+
+    const demoUser = {
+        ...(existingDemoUser || {}),
+        id: DEMO_USER_ID,
+        name: "Demo User",
+        email: DEMO_EMAIL,
+        passwordHash,
+        profileImg: null,
+        username: "demo-user",
+        title: "Frontend Developer",
+        bio: "This is a demo profile for Job Tracker. Explore applications, dashboard stats, notifications and public profile features.",
+        skills: ["JavaScript", "Node.js", "Express", "React", "CSS", "GitHub"],
+        githubUrl: "https://github.com/samme-commit",
+        portfolioUrl: "https://samme-commit-portfolio.vercel.app/",
+        linkedinUrl: "",
+        contactEmail: DEMO_EMAIL,
+        location: "Sweden",
+        openToWork: true,
+        projects: [
+            {
+                name: "PulsePay",
+                description: "A Stripe-inspired checkout demo with polished payment UI and animated flows.",
+                techStack: ["React", "TypeScript", "CSS"],
+                githubUrl: "https://github.com/samme-commit",
+                demoUrl: ""
+            },
+            {
+                name: "Job Tracker",
+                description: "A full-stack job application tracker with authentication, dashboard and profiles.",
+                techStack: ["Node.js", "Express", "JavaScript"],
+                githubUrl: "https://github.com/samme-commit/job-tracker",
+                demoUrl: ""
+            }
+        ],
+        profileVisibility: "public",
+        providers: {},
+        lastNameChangeAt: null,
+        createdAt: existingDemoUser?.createdAt || now
+    };
+
+    if (existingDemoIndex !== -1) {
+        users[existingDemoIndex] = demoUser;
+    } else {
+        users.push(demoUser);
+    }
+
+    await writeJSON(usersPath, users);
+
+    const demoApplications = [
+        {
+            id: "demo-app-1",
+            userId: DEMO_USER_ID,
+            company: "Spotify",
+            role: "Frontend Developer Intern",
+            location: "Stockholm, Sweden",
+            date: getDaysAgo(2),
+            status: "interview",
+            notes: "First interview booked. Prepare React, accessibility and portfolio walkthrough.",
+            archived: false,
+            archivedAt: null,
+            createdAt: now,
+            updatedAt: now
+        },
+        {
+            id: "demo-app-2",
+            userId: DEMO_USER_ID,
+            company: "Klarna",
+            role: "Junior Web Developer",
+            location: "Remote",
+            date: getDaysAgo(5),
+            status: "applied",
+            notes: "Applied with portfolio, PulsePay and Job Tracker highlighted.",
+            archived: false,
+            archivedAt: null,
+            createdAt: now,
+            updatedAt: now
+        },
+        {
+            id: "demo-app-3",
+            userId: DEMO_USER_ID,
+            company: "Northvolt",
+            role: "Frontend Engineer",
+            location: "Skellefteå, Sweden",
+            date: getDaysAgo(9),
+            status: "notApplied",
+            notes: "Need to adjust CV and write a shorter cover letter.",
+            archived: false,
+            archivedAt: null,
+            createdAt: now,
+            updatedAt: now
+        },
+        {
+            id: "demo-app-4",
+            userId: DEMO_USER_ID,
+            company: "GitHub",
+            role: "Fullstack Intern",
+            location: "Remote",
+            date: getDaysAgo(14),
+            status: "offer",
+            notes: "Demo offer example used for dashboard statistics.",
+            archived: false,
+            archivedAt: null,
+            createdAt: now,
+            updatedAt: now
+        },
+        {
+            id: "demo-app-5",
+            userId: DEMO_USER_ID,
+            company: "Vercel",
+            role: "Frontend Developer",
+            location: "Remote",
+            date: getDaysAgo(20),
+            status: "rejected",
+            notes: "Rejected after screening. Keep as example history item.",
+            archived: false,
+            archivedAt: null,
+            createdAt: now,
+            updatedAt: now
+        },
+        {
+            id: "demo-app-6",
+            userId: DEMO_USER_ID,
+            company: "Linear",
+            role: "Product UI Developer",
+            location: "Remote",
+            date: getDaysAgo(28),
+            status: "applied",
+            notes: "Strong fit because of polished SaaS-style frontend projects.",
+            archived: true,
+            archivedAt: now,
+            createdAt: now,
+            updatedAt: now
+        }
+    ];
+
+    const applications = await readJSON(applicationsPath);
+    const applicationsWithoutDemo = applications.filter((application) => {
+        return application.userId !== DEMO_USER_ID;
+    });
+
+    await writeJSON(applicationsPath, [...demoApplications, ...applicationsWithoutDemo]);
+
+    const demoNotifications = [
+        {
+            id: "demo-notification-1",
+            userId: DEMO_USER_ID,
+            type: "application",
+            title: "Interview reminder",
+            message: "Spotify interview is coming up. Review your portfolio and React projects.",
+            meta: {},
+            read: false,
+            createdAt: now
+        },
+        {
+            id: "demo-notification-2",
+            userId: DEMO_USER_ID,
+            type: "system",
+            title: "Welcome to Job Tracker",
+            message: "This demo account includes preloaded applications, stats and profile data.",
+            meta: {},
+            read: false,
+            createdAt: now
+        },
+        {
+            id: "demo-notification-3",
+            userId: DEMO_USER_ID,
+            type: "profile_update",
+            title: "Public profile ready",
+            message: "The demo public profile is visible and ready to preview.",
+            meta: {},
+            read: true,
+            createdAt: now
+        }
+    ];
+
+    const notifications = await readJSON(notificationsPath);
+    const notificationsWithoutDemo = notifications.filter((notification) => {
+        return notification.userId !== DEMO_USER_ID;
+    });
+
+    await writeJSON(notificationsPath, [...demoNotifications, ...notificationsWithoutDemo]);
+
+    return demoUser;
+}
+
+// Demo Website
 
 function validateBody(schema, req, res, message = "Invalid input.") {
     const parsed = schema.safeParse(req.body);
@@ -611,6 +823,25 @@ app.post("/api/auth/login", loginLimiter, asyncHandler(async (req, res) => {
         user: publicUser(user)
     });
 }));
+
+
+// Demo Website
+app.post("/api/auth/demo", authLimiter, asyncHandler(async (req, res) => {
+    if (!DEMO_MODE) {
+        return res.status(404).json({ message: "Demo mode is not enabled." });
+    }
+
+    const demoUser = await seedDemoAccount();
+
+    req.session.userId = demoUser.id;
+
+    return saveSessionAndRespond(req, res, 200, {
+        message: "Logged in to demo account.",
+        user: publicUser(demoUser)
+    });
+}));
+// Demo Website
+
 
 app.get("/api/auth/me", requireAuth, asyncHandler(async (req, res) => {
     const users = await readJSON(usersPath);

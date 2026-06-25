@@ -27,6 +27,55 @@ const forgotPasswordCancelBtn = document.getElementById("forgotPasswordCancelBtn
 const githubAuthBtn = document.getElementById("githubAuthBtn");
 const comingSoonAuthButtons = document.querySelectorAll("[data-coming-soon]");
 
+// Demo Website
+const demoLoginBtn = document.getElementById("demoLoginBtn");
+
+function setupDemoLoginButton() {
+    if (!demoLoginBtn) return;
+
+    demoLoginBtn.addEventListener("click", async () => {
+        try {
+            clearAuthMessage();
+
+            demoLoginBtn.disabled = true;
+            demoLoginBtn.classList.add("loading");
+
+            const icon = demoLoginBtn.querySelector("i");
+            const text = demoLoginBtn.querySelector("span");
+
+            if (icon) icon.className = "fa-solid fa-spinner fa-spin";
+            if (text) text.textContent = "Loading demo...";
+
+            const response = await fetch("/api/auth/demo", {
+                method: "POST",
+                credentials: "include"
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Could not start demo.");
+            }
+
+            showAuthSuccess("Demo account loaded.");
+            window.location.replace("/");
+        } catch (error) {
+            showAuthError(error.message);
+        } finally {
+            demoLoginBtn.disabled = false;
+            demoLoginBtn.classList.remove("loading");
+
+            const icon = demoLoginBtn.querySelector("i");
+            const text = demoLoginBtn.querySelector("span");
+
+            if (icon) icon.className = "fa-solid fa-wand-magic-sparkles";
+            if (text) text.textContent = "Try demo account";
+        }
+    });
+}
+
+// Demo Website
+
 async function redirectIfAuthenticated() {
     try {
         const response = await fetch("/api/auth/me", {
@@ -480,11 +529,11 @@ function setupInputPolish() {
 
 function initAuthPage() {
     redirectIfAuthenticated();
-
     setupAuthTabs();
     setupPasswordToggles();
     setupLoginForm();
     setupRegisterForm();
+    setupDemoLoginButton();
     setupForgotPasswordLink();
     setupForgotPasswordModal();
     setupSocialAuthButtons();
