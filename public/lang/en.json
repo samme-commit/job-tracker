@@ -16,8 +16,9 @@
     "applicationsText": "Here you can add and manage your job applications.",
     "viewApplicationDetails": "View application details",
     "noNotesAdded": "No notes added.",
-    "applicationUpdated": "Ansökan uppdaterades.",
-    "saving": "Sparar...",
+    "applicationUpdated": "Application updated.",
+    "saving": "Saving...",
+    "settingsAutoSaved": "Settings are saved automatically.",
 
     "statisticsHeading": "Statistics",
     "statisticsText": "Here you can see stats about your applications.",

@@ -11,10 +11,11 @@
     "applicationsHeading": "Bewerbungen",
     "applicationsText": "Hier kannst du deine Bewerbungen hinzufügen und verwalten.",
 
-    "viewApplicationDetails": "View application details",
-    "noNotesAdded": "No notes added.",
-    "applicationUpdated": "Ansökan uppdaterades.",
-    "saving": "Sparar...",
+    "viewApplicationDetails": "Bewerbungsdetails anzeigen",
+    "noNotesAdded": "Keine Notizen hinzugefügt.",
+    "applicationUpdated": "Bewerbung wurde aktualisiert.",
+    "saving": "Speichern...",
+    "settingsAutoSaved": "Einstellungen werden automatisch gespeichert.",
 
     "statisticsHeading": "Statistiken",
     "statisticsText": "Hier kannst du Statistiken über deine Bewerbungen sehen.",

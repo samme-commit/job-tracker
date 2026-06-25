@@ -11,10 +11,11 @@
     "applicationsHeading": "Solicitudes",
     "applicationsText": "Aquí puedes añadir y gestionar tus solicitudes de empleo.",
     
-    "viewApplicationDetails": "View application details",
-    "noNotesAdded": "No notes added.",
-    "applicationUpdated": "Ansökan uppdaterades.",
-    "saving": "Sparar...",
+    "viewApplicationDetails": "Ver detalles de la solicitud",
+    "noNotesAdded": "No se han añadido notas.",
+    "applicationUpdated": "Solicitud actualizada.",
+    "saving": "Guardando...",
+    "settingsAutoSaved": "Los ajustes se guardan automáticamente.",
 
     "statisticsHeading": "Estadísticas",
     "statisticsText": "Aquí puedes ver estadísticas de tus solicitudes.",

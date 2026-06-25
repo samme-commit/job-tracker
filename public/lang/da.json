@@ -11,10 +11,11 @@
     "applicationsHeading": "Ansøgninger",
     "applicationsText": "Her kan du tilføje og administrere dine jobansøgninger.",
 
-    "viewApplicationDetails": "View application details",
-    "noNotesAdded": "No notes added.",
-    "applicationUpdated": "Ansökan uppdaterades.",
-    "saving": "Sparar...",
+    "viewApplicationDetails": "Vis ansøgningsdetaljer",
+    "noNotesAdded": "Ingen noter tilføjet.",
+    "applicationUpdated": "Ansøgningen blev opdateret.",
+    "saving": "Gemmer...",
+    "settingsAutoSaved": "Indstillingerne gemmes automatisk.",
     
     "statisticsHeading": "Statistik",
     "statisticsText": "Her kan du se statistik over dine ansøgninger.",

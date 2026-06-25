@@ -10,11 +10,12 @@
     "dashboardText": "С возвращением! Здесь ты можешь посмотреть обзор своих заявок на работу.",
     "applicationsHeading": "Заявки",
     "applicationsText": "Здесь ты можешь добавлять и управлять своими заявками на работу.",
-        
-    "viewApplicationDetails": "View application details",
-    "noNotesAdded": "No notes added.",
-    "applicationUpdated": "Ansökan uppdaterades.",
-    "saving": "Sparar...",
+
+    "viewApplicationDetails": "Посмотреть детали отклика",
+    "noNotesAdded": "Заметки не добавлены.",
+    "applicationUpdated": "Отклик обновлён.",
+    "saving": "Сохранение...",
+    "settingsAutoSaved": "Настройки сохраняются автоматически.",
 
     "statisticsHeading": "Статистика",
     "statisticsText": "Здесь ты можешь посмотреть статистику по своим заявкам.",
