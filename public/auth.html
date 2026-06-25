@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Job Tracker | Auth</title>
+
+    <meta
+        name="description"
+        content="Login or create an account for Job Tracker, a clean dashboard for tracking job applications."
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="auth.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    >
+</head>
+
+<body>
+    <div class="auth-bg" aria-hidden="true">
+        <div class="auth-bg-grid"></div>
+        <div class="auth-bg-blob auth-bg-blob-1"></div>
+        <div class="auth-bg-blob auth-bg-blob-2"></div>
+        <div class="auth-bg-blob auth-bg-blob-3"></div>
+    </div>
+
+    <main class="auth-page">
+        <section class="auth-shell" aria-label="Authentication">
+            <aside class="auth-showcase">
+                <div class="showcase-badge">
+                    <i class="fa-solid fa-rocket"></i>
+                    <span>Launch-ready job tracking</span>
+                </div>
+
+                <div class="showcase-content">
+                    <div class="auth-logo large">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+
+                    <h1 data-i18n="appTitle">Job Tracker</h1>
+
+                    <p>
+                        Track applications, interviews, offers and follow-ups in one clean, focused dashboard.
+                    </p>
+                </div>
+
+                <div class="showcase-preview" aria-hidden="true">
+                    <div class="preview-header">
+                        <div>
+                            <span class="preview-dot"></span>
+                            <span class="preview-dot"></span>
+                            <span class="preview-dot"></span>
+                        </div>
+
+                        <span class="preview-pill">Live dashboard</span>
+                    </div>
+
+                    <div class="preview-stats">
+                        <div class="preview-stat-card">
+                            <span>Applications</span>
+                            <strong>24</strong>
+                        </div>
+
+                        <div class="preview-stat-card">
+                            <span>Interviews</span>
+                            <strong>6</strong>
+                        </div>
+
+                        <div class="preview-stat-card">
+                            <span>Offers</span>
+                            <strong>2</strong>
+                        </div>
+                    </div>
+
+                    <div class="preview-list">
+                        <div class="preview-item">
+                            <div>
+                                <strong>Frontend Developer</strong>
+                                <span>Spotify · Interview</span>
+                            </div>
+
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <div class="preview-item">
+                            <div>
+                                <strong>Junior Web Developer</strong>
+                                <span>Google · Applied</span>
+                            </div>
+
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+
+                        <div class="preview-item">
+                            <div>
+                                <strong>Fullstack Intern</strong>
+                                <span>GitHub · Follow up</span>
+                            </div>
+
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="showcase-features">
+                    <div class="showcase-feature">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Session-based auth</span>
+                    </div>
+
+                    <div class="showcase-feature">
+                        <i class="fa-solid fa-chart-simple"></i>
+                        <span>Clean dashboard</span>
+                    </div>
+
+                    <div class="showcase-feature">
+                        <i class="fa-brands fa-github"></i>
+                        <span>GitHub login</span>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="auth-card">
+                <div class="auth-card-glow" aria-hidden="true"></div>
+
+                <div class="auth-brand">
+                    <div class="auth-logo">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+
+                    <h2 data-i18n="appTitle">Job Tracker</h2>
+
+                    <p data-i18n="authSubtitle">
+                        Track your job applications in one clean dashboard.
+                    </p>
+                </div>
+
+                <div class="auth-tabs" role="tablist" aria-label="Auth tabs">
+                    <button
+                        class="auth-tab active"
+                        type="button"
+                        id="loginTab"
+                        role="tab"
+                        aria-selected="true"
+                        aria-controls="loginForm"
+                        data-auth-tab="login"
+                        data-i18n="login"
+                    >
+                        Login
+                    </button>
+
+                    <button
+                        class="auth-tab"
+                        type="button"
+                        id="registerTab"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="registerForm"
+                        data-auth-tab="register"
+                        data-i18n="register"
+                    >
+                        Register
+                    </button>
+                </div>
+
+                <form class="auth-form active" id="loginForm" role="tabpanel" aria-labelledby="loginTab">
+                    <div class="auth-input-group">
+                        <label for="loginEmail" data-i18n="emailAddress">
+                            Email address
+                        </label>
+
+                        <div class="input-shell">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+
+                            <input
+                                type="email"
+                                id="loginEmail"
+                                name="email"
+                                placeholder="you@example.com"
+                                autocomplete="email"
+                                spellcheck="false"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="loginPassword" data-i18n="password">
+                            Password
+                        </label>
+
+                        <div class="input-shell password-field">
+                            <i class="fa-solid fa-lock input-icon"></i>
+
+                            <input
+                                type="password"
+                                id="loginPassword"
+                                name="password"
+                                placeholder="••••••••"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                class="password-toggle"
+                                type="button"
+                                data-toggle-password="loginPassword"
+                                aria-label="Show password"
+                            >
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="auth-row">
+                        <label class="remember-option">
+                            <input type="checkbox" id="rememberLogin" checked>
+                            <span>Keep me signed in</span>
+                        </label>
+
+                        <a href="#" class="auth-link" id="forgotPasswordLink">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <button class="auth-submit-btn" type="submit">
+                        <span data-i18n="login">Login</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <form class="auth-form" id="registerForm" role="tabpanel" aria-labelledby="registerTab" hidden>
+                    <div class="auth-input-group">
+                        <label for="registerName" data-i18n="displayName">
+                            Display name
+                        </label>
+
+                        <div class="input-shell">
+                            <i class="fa-regular fa-user input-icon"></i>
+
+                            <input
+                                type="text"
+                                id="registerName"
+                                name="name"
+                                placeholder="Samuel"
+                                autocomplete="name"
+                                minlength="2"
+                                maxlength="50"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="registerEmail" data-i18n="emailAddress">
+                            Email address
+                        </label>
+
+                        <div class="input-shell">
+                            <i class="fa-regular fa-envelope input-icon"></i>
+
+                            <input
+                                type="email"
+                                id="registerEmail"
+                                name="email"
+                                placeholder="you@example.com"
+                                autocomplete="email"
+                                spellcheck="false"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="registerPassword" data-i18n="password">
+                            Password
+                        </label>
+
+                        <div class="input-shell password-field">
+                            <i class="fa-solid fa-lock input-icon"></i>
+
+                            <input
+                                type="password"
+                                id="registerPassword"
+                                name="password"
+                                placeholder="Minimum 6 characters"
+                                autocomplete="new-password"
+                                minlength="6"
+                                required
+                            >
+
+                            <button
+                                class="password-toggle"
+                                type="button"
+                                data-toggle-password="registerPassword"
+                                aria-label="Show password"
+                            >
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+
+                        <div class="password-hint">
+                            <span id="passwordStrengthDot"></span>
+                            <small id="passwordStrengthText">Use at least 6 characters.</small>
+                        </div>
+                    </div>
+
+                    <button class="auth-submit-btn" type="submit">
+                        <span data-i18n="createAccount">Create account</span>
+                        <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                </form>
+
+                <div class="auth-divider">
+                    <span data-i18n="or">or</span>
+                </div>
+
+                <div class="social-auth">
+                    <a class="social-auth-btn github" href="/api/auth/github" id="githubAuthBtn">
+                        <span class="social-auth-main">
+                            <i class="fa-brands fa-github"></i>
+                            <span data-social-auth-text data-i18n="continueWithGithub">Continue with GitHub</span>
+                        </span>
+
+                        <i class="fa-solid fa-arrow-right social-auth-arrow"></i>
+                    </a>
+
+                    <button class="social-auth-btn provider-disabled" type="button" data-coming-soon="Google">
+                        <span class="social-auth-main">
+                            <i class="fa-brands fa-google"></i>
+                            <span>Continue with Google</span>
+                        </span>
+
+                        <span class="coming-soon-pill">Coming soon</span>
+                    </button>
+
+                    <button class="social-auth-btn provider-disabled" type="button" data-coming-soon="LinkedIn">
+                        <span class="social-auth-main">
+                            <i class="fa-brands fa-linkedin"></i>
+                            <span>Continue with LinkedIn</span>
+                        </span>
+
+                        <span class="coming-soon-pill">Coming soon</span>
+                    </button>
+                </div>
+
+                <p class="auth-message" id="authMessage" role="alert" aria-live="polite"></p>
+
+                <p class="auth-footer-text">
+                    By continuing, you agree to use Job Tracker responsibly.
+                </p>
+
+                <aside class="auth-cookie-note">
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <p>
+                        <strong data-i18n="necessaryCookiesTitle">Necessary cookies</strong>
+
+                        <span data-i18n="necessaryCookiesText">
+                            We use necessary cookies to keep you signed in and keep the app secure.
+                            We do not use analytics or marketing cookies.
+                        </span>
+                    </p>
+                </aside>
+            </section>
+        </section>
+    </main>
+
+    <div class="auth-modal-backdrop" id="forgotPasswordModal" aria-hidden="true">
+        <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="forgotPasswordTitle">
+            <button class="auth-modal-close" type="button" id="forgotPasswordCloseBtn" aria-label="Close modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="auth-modal-icon">
+                <i class="fa-solid fa-key"></i>
+            </div>
+
+            <h3 id="forgotPasswordTitle">Reset your password</h3>
+
+            <p>
+                Enter your email address and we'll help you get back into your account.
+            </p>
+
+            <form id="forgotPasswordForm">
+                <div class="auth-input-group">
+                    <label for="forgotPasswordEmail">Email address</label>
+
+                    <div class="input-shell">
+                        <i class="fa-regular fa-envelope input-icon"></i>
+
+                        <input
+                            type="email"
+                            id="forgotPasswordEmail"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            spellcheck="false"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <button class="auth-submit-btn" type="submit">
+                    <span>Send reset link</span>
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+
+            <button class="auth-modal-secondary" type="button" id="forgotPasswordCancelBtn">
+                Back to login
+            </button>
+
+            <p class="auth-modal-message" id="forgotPasswordMessage"></p>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>

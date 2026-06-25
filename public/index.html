@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track job applications, manage follow-ups and create a public job seeker profile.">
+    <meta name="theme-color" content="#4f46e5">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="app.css">
+
+    <title>samme-commit | Job Tracker</title>
+</head>
+<body class="intro-playing">
+    <div class="intro-overlay" id="introOverlay" aria-hidden="true">
+        <div class="intro-glow"></div>
+        <h1 class="intro-logo"><span>Job</span><span>Tracker</span></h1>
+    </div>
+
+    <header class="app-header">
+        <div class="header-section header-left">
+            <h1 data-i18n="appTitle">Job Tracker</h1>
+        </div>
+
+        <div class="header-section header-center">
+            <h2 id="pageTitle" data-i18n="dashboard">Dashboard</h2>
+        </div>
+
+        <div class="header-section header-right">
+            <button class="inbox-btn" id="inboxBtn" type="button" aria-label="Notifications">
+                <i class="fa-solid fa-inbox"></i>
+                <span class="inbox-badge" id="inboxBadge">0</span>
+            </button>
+
+            <label class="sr-only" for="lang">Language</label>
+            <select name="lang" id="lang" class="lang-select compact-select">
+                <option value="sv">🇸🇪</option>
+                <option value="en">🇬🇧</option>
+                <option value="de">🇩🇪</option>
+                <option value="ru">🇷🇺</option>
+                <option value="es">🇪🇸</option>
+                <option value="no">🇳🇴</option>
+                <option value="da">🇩🇰</option>
+            </select>
+        </div>
+    </header>
+
+    <aside class="sidebar" aria-label="Main navigation">
+        <div class="sidebar-account">
+            <button class="account-btn" id="accountBtn" type="button" data-i18n-title="accountButtonLabel" title="Account" aria-label="Account">
+                <div class="account-avatar" id="sidebarAvatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="account-info">
+                    <span id="sidebarUsername">Guest</span>
+                    <small id="sidebarUserEmail">Not signed in</small>
+                </div>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="tab-btn active" type="button" data-tab="dashboard">
+                <i class="fa-solid fa-chart-line"></i>
+                <span class="nav-text" data-i18n="dashboard">Dashboard</span>
+            </button>
+
+            <button class="tab-btn" type="button" data-tab="applications">
+                <i class="fa-solid fa-briefcase"></i>
+                <span class="nav-text" data-i18n="applications">Applications</span>
+            </button>
+
+            <button class="tab-btn" type="button" data-tab="statistics">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span class="nav-text" data-i18n="statistics">Statistics</span>
+            </button>
+
+            <button class="tab-btn" type="button" data-tab="settings">
+                <i class="fa-solid fa-gear"></i>
+                <span class="nav-text" data-i18n="settings">Settings</span>
+            </button>
+        </nav>
+
+        <button class="tab-btn logout-btn" id="logoutBtn" type="button">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span class="nav-text" data-i18n="logout">Logout</span>
+        </button>
+    </aside>
+
+    <main class="main-content">
+        <section class="tab-content active" id="dashboard">
+            <div class="page-heading">
+                <div>
+                    <h2 data-i18n="dashboardHeading">Dashboard</h2>
+                    <p data-i18n="dashboardText">Welcome back! Here you can see an overview of your job applications.</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <div><span data-i18n="totalApplications">Total applications</span><strong id="totalApplicationsStat">0</strong></div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <div><span data-i18n="activeApplicationsFull">Active applications</span><strong id="activeApplicationsStat">0</strong></div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-box-archive"></i></div>
+                    <div><span data-i18n="archivedApplicationsFull">Archived applications</span><strong id="archivedApplicationsStat">0</strong></div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-comments"></i></div>
+                    <div><span data-i18n="interviews">Interviews</span><strong id="interviewsStat">0</strong></div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
+                    <div><span data-i18n="offers">Offers</span><strong id="offersStat">0</strong></div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-icon danger"><i class="fa-solid fa-circle-xmark"></i></div>
+                    <div><span data-i18n="rejected">Rejected</span><strong id="rejectedStat">0</strong></div>
+                </article>
+            </div>
+
+            <section class="followup-card">
+                <div class="followup-summary">
+                    <div class="followup-icon"><i class="fa-solid fa-bell"></i></div>
+                    <div>
+                        <h3 data-i18n="followUpsDue">Follow-ups due</h3>
+                        <p id="followUpsSummary">0 applications need follow-up.</p>
+                    </div>
+                </div>
+                <div class="followup-list" id="followUpsList"></div>
+            </section>
+
+            <div class="dashboard-grid">
+                <section class="panel graph-carousel-card">
+                    <div class="panel-header graph-header">
+                        <div>
+                            <h3 id="dashboardGraphTitle" data-i18n="overallGraph">Overall graph</h3>
+                            <p id="dashboardGraphText" data-i18n="overallGraphText">Status overview for your active applications.</p>
+                        </div>
+                        <div class="graph-dots" id="graphDots" aria-label="Graph navigation">
+                            <button class="graph-dot active" type="button" data-graph-index="0" aria-label="Overall graph"></button>
+                            <button class="graph-dot" type="button" data-graph-index="1" aria-label="Response rate"></button>
+                            <button class="graph-dot" type="button" data-graph-index="2" aria-label="This week"></button>
+                        </div>
+                    </div>
+                    <div class="dashboard-chart graph-slide" id="dashboardChart"></div>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 data-i18n="recentApplications">Recent applications</h3>
+                            <p data-i18n="recentApplicationsText">Your latest active job applications.</p>
+                        </div>
+                    </div>
+                    <div class="recent-applications-list" id="recentApplicationsList"></div>
+                </section>
+            </div>
+        </section>
+
+        <section class="tab-content" id="applications">
+            <div class="page-heading">
+                <div>
+                    <h2 data-i18n="applicationsHeading">Applications</h2>
+                    <p data-i18n="applicationsText">Add, track and manage your job applications.</p>
+                </div>
+            </div>
+
+            <div class="applications-layout" id="applicationsLayout">
+                <section class="panel form-panel" id="applicationFormCard">
+                    <div class="form-panel-header">
+                        <h3 data-i18n="addApplicationTitle">Add application</h3>
+
+                        <button class="toggle-application-form-btn" id="toggleApplicationFormBtn" type="button" title="Dölj formulär" aria-label="Dölj formulär">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                    </div>
+                    <form id="applicationForm">
+                        <div class="form-group">
+                            <label for="companyInput" data-i18n="company">Company</label>
+                            <input type="text" id="companyInput" data-i18n-placeholder="companyPlaceholder" placeholder="e.g. Piteå Havsbad" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="roleInput" data-i18n="role">Role</label>
+                            <input type="text" id="roleInput" data-i18n-placeholder="rolePlaceholder" placeholder="e.g. Activity host" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="locationInput" data-i18n="location">Location</label>
+                            <input type="text" id="locationInput" data-i18n-placeholder="locationPlaceholder" placeholder="e.g. Piteå" autocomplete="off">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dateInput" data-i18n="date">Date</label>
+                                <input type="date" id="dateInput" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="statusInput" data-i18n="status">Status</label>
+                                <select id="statusInput">
+                                    <option value="notApplied" data-i18n="statusNotApplied">Not applied</option>
+                                    <option value="applied" data-i18n="statusApplied">Applied</option>
+                                    <option value="interview" data-i18n="statusInterview">Interview</option>
+                                    <option value="offer" data-i18n="statusOffer">Offer</option>
+                                    <option value="rejected" data-i18n="statusRejected">Rejected</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="notesInput" data-i18n="notes">Notes</label>
+                            <textarea id="notesInput" data-i18n-placeholder="notesPlaceholder" placeholder="Write a short note..." autocomplete="off"></textarea>
+                        </div>
+                        <button type="submit" class="primary-btn full-width">
+                            <i class="fa-solid fa-plus"></i>
+                            <span data-i18n="addApplicationBtn">Add application</span>
+                        </button>
+                    </form>
+                </section>
+
+                <section class="panel applications-list-panel">
+                    <div class="list-header">
+                        <div>
+                            <h3 data-i18n="yourApplications">Your applications</h3>
+                            <p id="applicationsCount">0 applications</p>
+                        </div>
+                        <div class="applications-controls">
+                            <div class="application-view-toggle">
+                                <button class="application-view-btn active" type="button" data-view="active" id="activeApplicationsBtn">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span data-i18n="activeApplications">Active</span>
+                                </button>
+                                <button class="application-view-btn" type="button" data-view="archived" id="archivedApplicationsBtn">
+                                    <i class="fa-solid fa-box-archive"></i>
+                                    <span data-i18n="archivedApplications">Archived</span>
+                                </button>
+                            </div>
+                            <select id="statusFilter" class="settings-select">
+                                <option value="all" data-i18n="filterAll">All</option>
+                                <option value="notApplied" data-i18n="statusNotApplied">Not applied</option>
+                                <option value="applied" data-i18n="statusApplied">Applied</option>
+                                <option value="interview" data-i18n="statusInterview">Interview</option>
+                                <option value="offer" data-i18n="statusOffer">Offer</option>
+                                <option value="rejected" data-i18n="statusRejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="applications-list" id="applicationsList"></div>
+                </section>
+            </div>
+        </section>
+
+        <section class="tab-content" id="statistics">
+            <div class="page-heading">
+                <div>
+                    <h2 data-i18n="statisticsHeading">Statistics</h2>
+                    <p data-i18n="statisticsText">Here you will see stats about your applications.</p>
+                </div>
+            </div>
+            <section class="panel empty-feature-panel">
+                <i class="fa-solid fa-chart-simple"></i>
+                <h3 data-i18n="statisticsHeading">Statistics</h3>
+                <p data-i18n="statisticsText">Here you will see stats about your applications.</p>
+            </section>
+        </section>
+
+        <section class="tab-content" id="settings">
+            <div class="page-heading settings-heading">
+                <div>
+                    <h2 data-i18n="settingsHeading">Settings</h2>
+                    <p data-i18n="settingsText">Manage your account and application preferences.</p>
+                </div>
+                <button class="primary-btn" type="button" id="saveSettingsBtn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span data-i18n="saveSettings">Save settings</span>
+                </button>
+            </div>
+
+            <section class="settings-panel">
+                <div class="settings-tabs" role="tablist" aria-label="Settings sections">
+                    <button class="settings-tab active" type="button" data-settings-tab="general" data-i18n="settingsGeneral">General</button>
+                    <button class="settings-tab" type="button" data-settings-tab="profile" data-i18n="settingsProfile">Profile</button>
+                    <button class="settings-tab" type="button" data-settings-tab="account" data-i18n="settingsAccount">Account</button>
+                    <button class="settings-tab" type="button" data-settings-tab="security" data-i18n="settingsSecurity">Security</button>
+                    <button class="settings-tab" type="button" data-settings-tab="preferences" data-i18n="settingsPreferences">Preferences</button>
+                    <button class="settings-tab" type="button" data-settings-tab="notifications" data-i18n="settingsNotifications">Notifications</button>
+                    <button class="settings-tab" type="button" data-settings-tab="privacy" data-i18n="settingsPrivacy">Privacy</button>
+                </div>
+
+                <div class="settings-content">
+                    <div class="settings-panel-tab active" id="settings-general">
+                        <h3 data-i18n="generalTitle">Account information</h3>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="profilePhoto">Profile photo</span></div>
+                            <div class="settings-value"><div class="profile-avatar" id="settingsProfileAvatar"><i class="fa-solid fa-user"></i></div></div>
+                            <button class="secondary-btn" type="button" id="editProfileImgBtn" data-i18n="edit">Edit</button>
+                            <input type="file" id="profileImageInput" accept="image/jpeg,image/png,image/webp" hidden>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="displayName">Display name</span></div>
+                            <div class="settings-value"><span id="settingsDisplayName">-</span></div>
+                            <button class="secondary-btn" type="button" id="editDisplayNameBtn" data-i18n="edit">Edit</button>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="emailAddress">Email address</span></div>
+                            <div class="settings-value"><span id="settingsEmail">-</span></div>
+                            <button class="secondary-btn disabled" type="button" disabled>-</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-panel-tab" id="settings-profile">
+                        <h3 data-i18n="publicProfileTitle">Public profile</h3>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="username">Username</span><small data-i18n="usernameText">Used for your public profile link.</small></div>
+                            <div class="settings-value"><input class="settings-input" id="profileUsernameInput" placeholder="samuel"></div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label">
+                                <span data-i18n="profileTitle">Title</span>
+                                <small data-i18n="profileTitleText">Example: Frontend Developer, Student Developer.</small>
+                            </div>
+
+                            <div class="settings-value">
+                                <input class="settings-input" id="profileTitleInput" placeholder="Frontend Developer">
+                            </div>
+                        </div>
+
+                        <div class="settings-row">
+                            <div class="settings-label">
+                                <span data-i18n="openToWork">Open to work</span>
+                                <small data-i18n="openToWorkText">Show if you are currently open to opportunities.</small>
+                            </div>
+
+                            <div class="settings-value">
+                                <label class="switch">
+                                    <input type="checkbox" id="profileOpenToWorkInput" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="settings-row settings-row-tall">
+                            <div class="settings-label"><span data-i18n="profileBio">Bio</span><small data-i18n="profileBioText">Write a short description about yourself.</small></div>
+                            <div class="settings-value"><textarea class="settings-textarea" id="profileBioInput" placeholder="I build websites with HTML, CSS and JavaScript."></textarea></div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="skills">Skills</span><small data-i18n="skillsText">Separate skills with commas.</small></div>
+                            <div class="settings-value"><input class="settings-input" id="profileSkillsInput" placeholder="HTML, CSS, JavaScript, Node.js"></div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="location">Location</span><small data-i18n="locationText">Your city or country.</small></div>
+                            <div class="settings-value"><input class="settings-input" id="profileLocationInput" placeholder="Sweden"></div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="githubUrl">GitHub link</span></div>
+                            <div class="settings-value"><input class="settings-input" id="profileGithubInput" placeholder="https://github.com/samme-commit"></div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="portfolioUrl">Portfolio link</span></div>
+                            <div class="settings-value"><input class="settings-input" id="profilePortfolioInput" placeholder="https://your-portfolio.com"></div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label">
+                                <span data-i18n="linkedinUrl">LinkedIn link</span>
+                            </div>
+
+                            <div class="settings-value">
+                                <input class="settings-input" id="profileLinkedinInput" placeholder="https://linkedin.com/in/username">
+                            </div>
+                        </div>
+
+                        <div class="settings-row">
+                            <div class="settings-label">
+                                <span data-i18n="contactEmail">Contact email</span>
+                                <small data-i18n="contactEmailText">Optional public contact email.</small>
+                            </div>
+
+                            <div class="settings-value">
+                                <input class="settings-input" id="profileContactEmailInput" placeholder="contact@example.com">
+                            </div>
+                        </div>
+                        <div class="settings-row settings-row-large">
+                            <div class="settings-label">
+                                <span data-i18n="featuredProjects">Featured projects</span>
+                                <small data-i18n="featuredProjectsText">
+                                    Add up to 4 projects to show on your public profile.
+                                </small>
+                            </div>
+
+                            <div class="settings-value">
+                                <div class="profile-projects-header">
+                                    <p id="profileProjectsCount">0 / 4 projects</p>
+
+                                    <button class="settings-edit-btn" id="addProfileProjectBtn" type="button">
+                                        <i class="fa-solid fa-plus"></i>
+                                        <span data-i18n="addProject">Add project</span>
+                                    </button>
+                                </div>
+
+                                <div class="profile-projects-list" id="profileProjectsList"></div>
+                            </div>
+                        </div>
+                        <div class="profile-share-card">
+                            <div>
+                                <span data-i18n="yourPublicProfile">Your public profile</span>
+                                <p id="profilePublicLink">No username yet</p>
+                            </div>
+
+                            <div class="profile-share-actions">
+                                <button class="settings-edit-btn" id="viewPublicProfileBtn" type="button">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    <span data-i18n="viewProfile">View</span>
+                                </button>
+
+                                <button class="settings-edit-btn" id="copyPublicProfileBtn" type="button">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span data-i18n="copyLink">Copy link</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="profileVisibility">Profile visibility</span><small data-i18n="profileVisibilityText">Choose if your public profile should be visible.</small></div>
+                            <div class="settings-value">
+                                <select class="settings-select" id="profileVisibilitySelect">
+                                    <option value="private" data-i18n="visibilityPrivate">Private</option>
+                                    <option value="public" data-i18n="visibilityPublic">Public</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="primary-btn profile-save-full" type="button" id="savePublicProfileBtn">
+                            <i class="fa-solid fa-check"></i>
+                            <span data-i18n="savePublicProfile">Save public profile</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-panel-tab" id="settings-account">
+                        <h3 data-i18n="accountTitle">Account details</h3>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="accountType">Account type</span></div>
+                            <div class="settings-value"><span>Free</span></div>
+                            <button class="secondary-btn disabled" type="button" disabled>-</button>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="createdAt">Created at</span></div>
+                            <div class="settings-value"><span id="settingsCreatedAt">-</span></div>
+                            <button class="secondary-btn disabled" type="button" disabled>-</button>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="userId">User ID</span></div>
+                            <div class="settings-value"><span id="settingsUserId">-</span></div>
+                            <button class="secondary-btn disabled" type="button" disabled>-</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-panel-tab" id="settings-security">
+                        <h3 data-i18n="securityTitle">Security</h3>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="password">Password</span><small data-i18n="passwordText">Update your account password.</small></div>
+                            <div class="settings-value"><span>••••••••</span></div>
+                            <button class="secondary-btn" type="button" id="changePasswordBtn" data-i18n="change">Change</button>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="twoFactor">Two-factor authentication</span><small data-i18n="twoFactorText">Add an extra layer of security.</small></div>
+                            <div class="settings-value"><span data-i18n="disabled">Disabled</span></div>
+                            <button class="secondary-btn disabled" type="button" disabled data-i18n="enable">Enable</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-panel-tab" id="settings-preferences">
+                        <h3 data-i18n="preferencesTitle">Preferences</h3>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="language">Language</span><small data-i18n="languageText">Choose your preferred language.</small></div>
+                            <div class="settings-value">
+                                <select class="settings-select lang-select" id="settingsLang">
+                                    <option value="sv">🇸🇪 Svenska</option>
+                                    <option value="en">🇬🇧 English</option>
+                                    <option value="de">🇩🇪 Deutsch</option>
+                                    <option value="ru">🇷🇺 Русский</option>
+                                    <option value="es">🇪🇸 Español</option>
+                                    <option value="no">🇳🇴 Norsk Bokmål</option>
+                                    <option value="da">🇩🇰 Dansk</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="theme">Theme</span><small data-i18n="themeText">Switch between light and dark mode.</small></div>
+                            <div class="settings-value">
+                                <button class="secondary-btn" type="button" id="themeToggle">
+                                    <i class="fa-solid fa-sun" id="themeIcon"></i>
+                                    <span id="themeText" data-i18n="lightMode">Light mode</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="dateFormat">Date format</span></div>
+                            <div class="settings-value">
+                                <select class="settings-select" id="dateFormatSelect">
+                                    <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                                    <option value="dd/mm/yyyy">DD/MM/YYYY</option>
+                                    <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-panel-tab" id="settings-notifications">
+                        <h3 data-i18n="notificationsTitle">Notifications</h3>
+                        <div class="settings-row"><div class="settings-label"><span data-i18n="emailNotifications">Email notifications</span><small data-i18n="emailNotificationsText">Receive updates about your job applications by email.</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                        <div class="settings-row"><div class="settings-label"><span data-i18n="applicationReminders">Application reminders</span><small data-i18n="applicationRemindersText">Get reminded to follow up on older applications.</small></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                        <div class="settings-row"><div class="settings-label"><span data-i18n="weeklySummary">Weekly summary</span><small data-i18n="weeklySummaryText">Receive a weekly overview of your progress.</small></div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+                    </div>
+
+                    <div class="settings-panel-tab" id="settings-privacy">
+                        <h3 data-i18n="privacyTitle">Privacy</h3>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="analyticsTracking">Usage analytics</span><small data-i18n="analyticsTrackingText">Allow anonymous usage data to improve the app.</small></div>
+                            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="settings-row">
+                            <div class="settings-label"><span data-i18n="exportData">Export data</span><small data-i18n="exportDataText">Download a copy of your applications and account data.</small></div>
+                            <div class="settings-value"><span class="status-pill" data-i18n="jsonFormat">JSON format</span></div>
+                            <button class="secondary-btn" type="button" id="exportDataBtn" data-i18n="export">Export</button>
+                        </div>
+                        <div class="danger-zone">
+                            <div>
+                                <h3 data-i18n="dangerZone">Danger zone</h3>
+                                <p data-i18n="dangerZoneText">Deleting your account is permanent. All applications, settings and account data will be removed.</p>
+                            </div>
+                            <button class="danger-btn" type="button" id="deleteAccountBtn">
+                                <i class="fa-solid fa-trash"></i>
+                                <span data-i18n="deleteAccount">Delete account</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <div class="profile-modal-overlay" id="profileModalOverlay">
+        <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+            <div class="profile-modal-header">
+                <div>
+                    <h3 id="profileModalTitle">Edit profile</h3>
+                    <p id="profileModalText">Update your account information.</p>
+                </div>
+                <button class="icon-btn" type="button" id="profileModalClose" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="displayNameForm" class="profile-modal-form">
+                <div class="form-group">
+                    <label for="newDisplayName" data-i18n="displayName">Display name</label>
+                    <input type="text" id="newDisplayName" required>
+                    <small class="profile-help-text" data-i18n="displayNameLimitText">You can only change your display name once per year.</small>
+                </div>
+                <button type="submit" class="primary-btn full-width"><i class="fa-solid fa-check"></i><span data-i18n="saveChanges">Save changes</span></button>
+            </form>
+
+            <form id="passwordForm" class="profile-modal-form">
+                <div class="form-group">
+                    <label for="currentPasswordInput" data-i18n="currentPassword">Current password</label>
+                    <input type="password" id="currentPasswordInput" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label for="newPasswordInput" data-i18n="newPassword">New password</label>
+                    <input type="password" id="newPasswordInput" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="primary-btn full-width"><i class="fa-solid fa-check"></i><span data-i18n="saveChanges">Save changes</span></button>
+            </form>
+
+            <p class="profile-modal-message" id="profileModalMessage"></p>
+        </div>
+    </div>
+
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+            <div class="confirm-icon" id="confirmIcon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="confirm-content">
+                <h3 id="confirmTitle">Are you sure?</h3>
+                <p id="confirmMessage">This action cannot be undone.</p>
+            </div>
+            <div class="confirm-actions">
+                <button class="secondary-btn" type="button" id="confirmCancelBtn" data-i18n="cancel">Cancel</button>
+                <button class="confirm-action-btn danger" type="button" id="confirmActionBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-modal-overlay" id="projectModalOverlay">
+        <div class="project-modal">
+            <div class="project-modal-header">
+                <div>
+                    <h3 id="projectModalTitle" data-i18n="addProject">Add project</h3>
+                    <p data-i18n="projectModalText">Add a project to your public profile.</p>
+                </div>
+
+                <button class="project-modal-close" id="projectModalClose" type="button">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="projectForm">
+                <div class="form-group">
+                    <label for="projectNameInput" data-i18n="projectName">Project name</label>
+                    <input type="text" id="projectNameInput" placeholder="Job Tracker" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectDescriptionInput" data-i18n="projectDescription">Description</label>
+                    <textarea id="projectDescriptionInput" placeholder="A fullstack job application tracker."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectTechInput" data-i18n="projectTechStack">Tech stack</label>
+                    <input type="text" id="projectTechInput" placeholder="HTML, CSS, JavaScript, Node.js">
+                </div>
+
+                <div class="form-group">
+                    <label for="projectGithubInput" data-i18n="githubUrl">GitHub link</label>
+                    <input type="url" id="projectGithubInput" placeholder="https://github.com/...">
+                </div>
+
+                <div class="form-group">
+                    <label for="projectDemoInput" data-i18n="projectDemoUrl">Demo link</label>
+                    <input type="url" id="projectDemoInput" placeholder="https://demo.com">
+                </div>
+
+                <button class="profile-save-btn" type="submit">
+                    <i class="fa-solid fa-check"></i>
+                    <span data-i18n="saveProject">Save project</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="notification-backdrop" id="notificationBackdrop"></div>
+
+    <aside class="notification-drawer" id="notificationDrawer">
+        <div class="notification-drawer-header">
+            <div>
+                <h3 data-i18n="notificationsTitle">Notifications</h3>
+                <p id="notificationSubtitle">No unread notifications</p>
+            </div>
+
+            <div class="notification-actions">
+                <button class="notification-icon-btn" id="markAllNotificationsReadBtn" type="button" title="Mark all as read">
+                    <i class="fa-solid fa-check-double"></i>
+                </button>
+
+                <button class="notification-icon-btn" id="expandNotificationsBtn" type="button" title="Expand">
+                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                </button>
+
+                <button class="notification-icon-btn" id="closeNotificationsBtn" type="button" title="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="notification-list" id="notificationList"></div>
+    </aside>
+
+    <div class="application-detail-overlay" id="applicationDetailOverlay" aria-hidden="true">
+        <section class="application-detail-modal" role="dialog" aria-modal="true" aria-labelledby="applicationDetailCompany">
+            <button class="application-detail-close" id="applicationDetailClose" type="button" aria-label="Close application details">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="application-detail-header">
+                <div class="application-detail-icon">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+
+                <div class="application-detail-heading">
+                    <div class="application-detail-badges">
+                        <span class="application-detail-label" id="applicationDetailStatus">Status</span>
+                        <span class="application-detail-archived-badge" id="applicationDetailArchivedBadge">Archived</span>
+                    </div>
+
+                    <h2 id="applicationDetailCompany">Company</h2>
+                    <p id="applicationDetailRole">Role</p>
+                </div>
+            </div>
+
+            <div class="application-detail-grid">
+                <div class="application-detail-info-card">
+                    <span>
+                        <i class="fa-solid fa-location-dot"></i>
+                        Location
+                    </span>
+                    <strong id="applicationDetailLocation">-</strong>
+                </div>
+
+                <div class="application-detail-info-card">
+                    <span>
+                        <i class="fa-solid fa-calendar"></i>
+                        Applied date
+                    </span>
+                    <strong id="applicationDetailDate">-</strong>
+                </div>
+
+                <div class="application-detail-info-card">
+                    <span>
+                        <i class="fa-solid fa-clock"></i>
+                        Created
+                    </span>
+                    <strong id="applicationDetailCreatedAt">-</strong>
+                </div>
+
+                <div class="application-detail-info-card">
+                    <span>
+                        <i class="fa-solid fa-pen"></i>
+                        Updated
+                    </span>
+                    <strong id="applicationDetailUpdatedAt">-</strong>
+                </div>
+            </div>
+
+            <div class="application-detail-section">
+                <div class="application-detail-section-title">
+                    <i class="fa-solid fa-note-sticky"></i>
+                    <h3>Notes</h3>
+                </div>
+
+                <p id="applicationDetailNotes" class="application-detail-notes">
+                    No notes added.
+                </p>
+            </div>
+
+            <form class="application-edit-form" id="applicationEditForm" hidden>
+                <div class="application-detail-section-title">
+                    <i class="fa-solid fa-pen"></i>
+                    <h3>Edit application</h3>
+                </div>
+
+                <div class="application-edit-grid">
+                    <div class="auth-input-group">
+                        <label for="editApplicationCompany">Company</label>
+                        <input type="text" id="editApplicationCompany" required>
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="editApplicationRole">Role</label>
+                        <input type="text" id="editApplicationRole" required>
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="editApplicationLocation">Location</label>
+                        <input type="text" id="editApplicationLocation">
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="editApplicationDate">Applied date</label>
+                        <input type="date" id="editApplicationDate" required>
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="editApplicationStatus">Status</label>
+                        <select id="editApplicationStatus" required>
+                            <option value="notApplied">Not applied</option>
+                            <option value="applied">Applied</option>
+                            <option value="interview">Interview</option>
+                            <option value="offer">Offer</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="auth-input-group">
+                    <label for="editApplicationNotes">Notes</label>
+                    <textarea id="editApplicationNotes" rows="4"></textarea>
+                </div>
+
+                <div class="application-edit-actions">
+                    <button class="application-detail-secondary-btn" id="applicationEditCancelBtn" type="button">
+                        Cancel
+                    </button>
+
+                    <button class="application-detail-action-btn edit" type="submit">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Save changes</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="application-detail-footer">
+                <div class="application-detail-footer-left">
+                    <button class="application-detail-action-btn edit" id="applicationDetailEditBtn" type="button">
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Edit</span>
+                    </button>
+
+                    <button class="application-detail-action-btn archive" id="applicationDetailArchiveBtn" type="button">
+                        <i class="fa-solid fa-box-archive"></i>
+                        <span>Archive</span>
+                    </button>
+
+                    <button class="application-detail-action-btn danger" id="applicationDetailDeleteBtn" type="button">
+                        <i class="fa-solid fa-trash"></i>
+                        <span>Delete</span>
+                    </button>
+                </div>
+
+                <button class="application-detail-secondary-btn" id="applicationDetailCloseFooter" type="button">
+                    Close
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <div class="mini-footer" id="miniFooter">
+        <button class="mini-footer-toggle" id="miniFooterToggle" type="button" aria-label="Open footer links">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <div class="mini-footer-panel">
+            <a href="/faq.html">FAQ</a>
+            <a href="/terms.html">Terms</a>
+            <a href="/privacy.html">Privacy</a>
+            <a href="mailto:contact@example.com">Contact</a>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
